@@ -2,6 +2,7 @@
 # run 
 #curl -LO https://raw.githubusercontent.com/mariobx/personal-neovim-config/main/neovim_installer_setup.sh && chmod +x neovim_installer_setup.sh && ./neovim_installer_setup.sh
 
+#!/bin/bash
 set -e 
 
 # CONFIG
@@ -21,11 +22,20 @@ install_debian() {
     sudo apt update
     sudo apt install -y git ripgrep fd-find build-essential unzip wget nodejs npm curl
 
-    # 2. Install Neovim (AppImage) because apt repos are ancient
+    # 2. Install Neovim (AppImage)
     echo "Downloading latest Neovim AppImage..."
+    
+    # Remove any existing artifacts to avoid confusion
+    rm -f nvim-linux-x86_64.appimage
+    
+    # Download the file
     curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.appimage
-    chmod u+x nvim.appimage
-    sudo mv nvim.appimage /usr/local/bin/nvim
+    
+    # Make it executable (Corrected filename)
+    chmod u+x nvim-linux-x86_64.appimage
+    
+    # Move it to path (Corrected filename)
+    sudo mv nvim-linux-x86_64.appimage /usr/local/bin/nvim
     
     # Symlink fd-find to fd 
     if ! command -v fd &> /dev/null; then
