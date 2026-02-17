@@ -1,4 +1,7 @@
 #!/bin/bash
+# run 
+#curl -LO https://raw.githubusercontent.com/mariobx/personal-neovim-config/main/neovim_installer_setup.sh && chmod +x neovim_installer_setup.sh && ./neovim_installer_setup.sh
+
 set -e 
 
 # CONFIG
