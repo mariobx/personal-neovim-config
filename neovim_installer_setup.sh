@@ -23,7 +23,7 @@ install_debian() {
 
     # 2. Install Neovim (AppImage) because apt repos are ancient
     echo "Downloading latest Neovim AppImage..."
-    curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
+    curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.appimage
     chmod u+x nvim.appimage
     sudo mv nvim.appimage /usr/local/bin/nvim
     
