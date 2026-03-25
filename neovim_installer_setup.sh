@@ -13,7 +13,7 @@ NVIM_CONFIG_DIR="$HOME/.config/nvim"
 
 install_arch() {
     echo "Detected Arch Linux..."
-    sudo pacman -S --noconfirm neovim git ripgrep fd base-devel unzip wget npm
+    sudo pacman -Sy --noconfirm neovim git ripgrep fd base-devel unzip wget npm wl-clipboard
 }
 
 install_debian() {
