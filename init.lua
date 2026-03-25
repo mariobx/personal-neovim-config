@@ -2,7 +2,7 @@
 -- ==                           1. CORE SETTINGS                           == --
 -- ========================================================================== --
 -- This section is for standard Vim settings (line numbers, tabs, etc.)
-
+vim.opt.clipboard = "unnamedplus"
 -- FIX: Suppress the annoying "deprecated" warning you saw earlier
 vim.g.lspconfig_suppress_deprecation_warnings = true
 vim.env.NVIM_LSPCONFIG_SUPPRESS_DEPRO_WARNINGS = "1"
