@@ -1,10 +1,9 @@
 #!/bin/bash
 
 # --- Configuration ---
-SOURCE_DIR="/home/mario/Downloads"
-BASE_DOCS="/home/mario/Documents"
-# Updated log path per your previous snippet
-DEST_FILE_LOG="/home/mario/bashscripts/filemove.log" 
+SOURCE_DIR="$HOME/Downloads"
+BASE_DOCS="$HOME/Documents"
+DEST_FILE_LOG="$SOURCE_DIR/filemove.log"
 
 # Define destinations
 DEST_DIR_PDF="${BASE_DOCS}/PDFs"
