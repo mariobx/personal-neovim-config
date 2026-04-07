@@ -2,12 +2,11 @@
 # run 
 #curl -LO https://raw.githubusercontent.com/mariobx/personal-neovim-config/main/neovim_installer_setup.sh && chmod +x neovim_installer_setup.sh && ./neovim_installer_setup.sh
 
-#!/bin/bash
 set -e 
 
 # CONFIG
 GITHUB_USER="mariobx" 
-REPO="personal-neovim-config"
+REPO="Personal-Config"
 BRANCH="main"
 NVIM_CONFIG_DIR="$HOME/.config/nvim"
 
@@ -61,7 +60,7 @@ fi
 mkdir -p "$NVIM_CONFIG_DIR"
 
 # 3. DOWNLOAD CONFIG
-RAW_URL="https://raw.githubusercontent.com/$GITHUB_USER/$REPO/$BRANCH/init.lua"
+RAW_URL="https://raw.githubusercontent.com/$GITHUB_USER/$REPO/$BRANCH/Neovim/init.lua."
 echo "Pulling config from $RAW_URL..."
 curl -fLo "$NVIM_CONFIG_DIR/init.lua" "$RAW_URL"
 
