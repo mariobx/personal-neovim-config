@@ -3,102 +3,48 @@
 # --- Configuration ---
 SOURCE_DIR="$HOME/Downloads"
 BASE_DOCS="$HOME/Documents"
-DEST_FILE_LOG="$SOURCE_DIR/filemove.log"
+LOG_FILE="$SOURCE_DIR/filemove.log"
 
-# Define destinations
-DEST_DIR_PDF="${BASE_DOCS}/PDFs"
-DEST_DIR_TXT="${BASE_DOCS}/TXTs"
-DEST_DIR_ISO="${BASE_DOCS}/ISOs"
-DEST_DIR_CSV="${BASE_DOCS}/CSVs"
-DEST_DIR_ZIP="${BASE_DOCS}/ZIPs"
-DEST_DIR_DEB="${BASE_DOCS}/DEBs"
-DEST_DIR_XJORPP="${BASE_DOCS}/Xournalpp/"
-DEST_DIR_EPUB="${BASE_DOCS}/EPUBs/"
-DEST_DIR_PICS="${BASE_DOCS}/IMAGEs/"
-DEST_DIR_PPT="${BASE_DOCS}/PPTs/"
-DEST_DIR_MP4="${BASE_DOCS}/MP3_4s/"
-
-
-
-# --- Setup ---
-
-# 1. Enable Case Insensitive Matching (matches .png and .PNG)
-shopt -s nocaseglob
-
-# 2. Ensure all destination directories exist
-DEST_DIRS=(
-  "$DEST_DIR_PDF" "$DEST_DIR_TXT" "$DEST_DIR_ISO" 
-  "$DEST_DIR_CSV" "$DEST_DIR_ZIP" "$DEST_DIR_DEB" 
-  "$DEST_DIR_XJORPP" "$DEST_DIR_EPUB" "$DEST_DIR_PICS"
-  "$DEST_DIR_PPT" "$DEST_DIR_MP4"
+# Setup destinations (Mapping extension to folder)
+declare -A DEST_MAP=(
+    ["pdf"]="$BASE_DOCS/PDFs"
+    ["txt"]="$BASE_DOCS/TXTs" ["doc"]="$BASE_DOCS/TXTs" ["docx"]="$BASE_DOCS/TXTs" ["md"]="$BASE_DOCS/TXTs"
+    ["iso"]="$BASE_DOCS/ISOs" ["img"]="$BASE_DOCS/ISOs"
+    ["csv"]="$BASE_DOCS/CSVs" ["xlsx"]="$BASE_DOCS/CSVs" ["ods"]="$BASE_DOCS/CSVs"
+    ["zip"]="$BASE_DOCS/ZIPs" ["tar"]="$BASE_DOCS/ZIPs" ["gz"]="$BASE_DOCS/ZIPs" ["7z"]="$BASE_DOCS/ZIPs"
+    ["deb"]="$BASE_DOCS/DEBs" ["rpm"]="$BASE_DOCS/DEBs"
+    ["xopp"]="$BASE_DOCS/Xjournalpp"
+    ["epub"]="$BASE_DOCS/EPUBs" ["mobi"]="$BASE_DOCS/EPUBs"
+    ["png"]="$BASE_DOCS/IMAGEs" ["jpg"]="$BASE_DOCS/IMAGEs" ["webp"]="$BASE_DOCS/IMAGEs"
+    ["ppt"]="$BASE_DOCS/PPTs" ["pptx"]="$BASE_DOCS/PPTs"
+    ["mp4"]="$BASE_DOCS/Media" ["mp3"]="$BASE_DOCS/Media" ["mkv"]="$BASE_DOCS/Media"
 )
 
-for dir in "${DEST_DIRS[@]}"; do
-  mkdir -p "$dir"
+# Create folders
+for dir in "${DEST_MAP[@]}"; do
+    mkdir -p "$dir"
 done
 
-# 3. Ensure the directory for the log file exists
-mkdir -p "$(dirname "$DEST_FILE_LOG")"
+# Ensure log exists
+touch "$LOG_FILE"
 
-# --- Functions ---
-
-move_and_log() {
-  local file_path="$1"
-  local dest_dir="$2"
-  local file_name
-  
-  file_name=$(basename "$file_path")
-
-  # Attempt to move the file
-  if mv -t "$file_path" "$dest_dir"; then
-    echo "$(date): Moved existing file: $file_name to $dest_dir" >> "$DEST_FILE_LOG"
-  else
-    echo "$(date): ERROR - Failed to move $file_name" >> "$DEST_FILE_LOG"
-  fi
-}
-
-# --- Main Execution ---
+# --- Logic ---
+shopt -s nocaseglob
 
 for FILE in "$SOURCE_DIR"/*; do
-  # Check if it is a file (not a directory)
-  if [ -f "$FILE" ]; then
-    case "$FILE" in
-      *.pdf)
-        move_and_log "$FILE" "$DEST_DIR_PDF"
-        ;;
-      *.txt|*.doc|*.docx|*.odt|*.rtf|*.md) # Added odt, rtf, md for completeness
-        move_and_log "$FILE" "$DEST_DIR_TXT"
-        ;;
-      *.iso|*.img) # Added img
-        move_and_log "$FILE" "$DEST_DIR_ISO"
-        ;;
-      *.csv|*.xls|*.xlsx|*.xlsm|*.ods) # Added ods (LibreOffice)
-        move_and_log "$FILE" "$DEST_DIR_CSV"
-        ;;
-      *.zip|*.tar|*.tar.gz|*.tar.xz|*.tar.bz2|*.7z|*.rar|*.tar.lz|*.gz)
-        move_and_log "$FILE" "$DEST_DIR_ZIP"
-        ;;
-      *.deb|*.rpm)
-        move_and_log "$FILE" "$DEST_DIR_DEB"
-        ;;
-      *.xopp)
-        move_and_log "$FILE" "$DEST_DIR_XJORPP"
-        ;;
-      *.epub|*.mobi|*.azw3) # Added Kindle formats
-        move_and_log "$FILE" "$DEST_DIR_EPUB"
-        ;;
-      *.png|*.jpg|*.jpeg|*.gif|*.webp|*.svg|*.bmp|*.tiff|*.ico|*.heic)
-        move_and_log "$FILE" "$DEST_DIR_PICS"
-        ;;
-      *.ppt|*.pptx|*.pps|*.ppsx|*.pot|*.potx|*.odp)
-        move_and_log "$FILE" "$DEST_DIR_PPT"
-        ;;
-      *.mp4|*.mkv|*.avi|*.mov|*.wmv|*.flv|*.webm|*.m4v|*.mpg|*.mpeg|*.3gp|*.ts|*.ogv|*.mp3|*.wav|*.flac|*.aac|*.ogg|*.m4a|*.wma|*.aiff|*.opus|*.srt|*.vtt|*.sub|*.ass|*.ssa|*.idx)
-        move_and_log "$FILE" "$DEST_DIR_MP4"
-        ;;
-      *)
-        # File type not configured, do nothing
-        ;;
-    esac
-  fi
+    # Skip if not a file or if it's an active download
+    [[ -f "$FILE" ]] || continue
+    [[ "$FILE" == *.part ]] || [[ "$FILE" == *.crdownload ]] && continue
+
+    EXT="${FILE##*.}"
+    DEST="${DEST_MAP[${EXT,,}]}"
+
+    if [[ -n "$DEST" ]]; then
+        # Fixed the -t flag you broke. Target directory comes FIRST.
+        if mv -t "$DEST" "$FILE"; then
+            echo "$(date): Moved $(basename "$FILE") to $DEST" >> "$LOG_FILE"
+        else
+            echo "$(date): ERROR - Failed to move $(basename "$FILE")" >> "$LOG_FILE"
+        fi
+    fi
 done
