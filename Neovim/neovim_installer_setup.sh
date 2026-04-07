@@ -6,7 +6,7 @@ set -e
 
 # CONFIG
 GITHUB_USER="mariobx" 
-REPO="Personal-Config"
+REPO="Personal-Configs"
 BRANCH="main"
 NVIM_CONFIG_DIR="$HOME/.config/nvim"
 
