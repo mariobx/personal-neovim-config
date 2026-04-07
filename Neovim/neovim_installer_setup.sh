@@ -60,7 +60,7 @@ fi
 mkdir -p "$NVIM_CONFIG_DIR"
 
 # 3. DOWNLOAD CONFIG
-RAW_URL="https://raw.githubusercontent.com/$GITHUB_USER/$REPO/$BRANCH/Neovim/init.lua."
+RAW_URL="https://raw.githubusercontent.com/$GITHUB_USER/$REPO/$BRANCH/Neovim/init.lua"
 echo "Pulling config from $RAW_URL..."
 curl -fLo "$NVIM_CONFIG_DIR/init.lua" "$RAW_URL"
 
